@@ -1,0 +1,22 @@
+{
+  "name": "StreetVibeX",
+  "short_name": "SVX",
+  "description": "Wearable art for the ones who don't fit in the feed.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#00FFFF",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

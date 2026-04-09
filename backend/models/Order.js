@@ -2,9 +2,10 @@ import mongoose from "mongoose";
 
 const orderSchema = new mongoose.Schema(
   {
-    razorpay_order_id: { type: String, required: true },
-    razorpay_payment_id: { type: String, required: true },
-    razorpay_signature: { type: String, required: true },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },
+    razorpay_order_id:   { type: String, default: "COD" },
+    razorpay_payment_id: { type: String, default: "COD" },
+    razorpay_signature:  { type: String, default: "COD" },
     items: [
       {
         productId: String,
@@ -31,6 +32,7 @@ const orderSchema = new mongoose.Schema(
       default: "confirmed",
     },
     paymentStatus: { type: String, default: "paid" },
+    paymentMethod: { type: String, enum: ["razorpay", "cod"], default: "razorpay" },
   },
   { timestamps: true }
 );

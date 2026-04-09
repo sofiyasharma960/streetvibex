@@ -1,0 +1,24 @@
+{
+  "name": "streetvibex",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sofiyasharma960/streetvibex.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/sofiyasharma960/streetvibex/issues"
+  },
+  "homepage": "https://github.com/sofiyasharma960/streetvibex#readme",
+  "dependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
