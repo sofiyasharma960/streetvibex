@@ -23,7 +23,6 @@ function OrderCard({ order }) {
       animate={{ opacity: 1, y: 0 }}
       className="border border-white/8 rounded-2xl overflow-hidden"
     >
-      {/* Header */}
       <div className="flex flex-wrap justify-between items-center gap-3 p-5 border-b border-white/5">
         <div>
           <p className="text-[9px] tracking-widest text-white/25 mb-1">ORDER ID</p>
@@ -42,7 +41,6 @@ function OrderCard({ order }) {
         </span>
       </div>
 
-      {/* Progress bar */}
       {order.status !== "cancelled" && (
         <div className="px-5 pt-4 pb-2">
           <div className="flex items-center">
@@ -63,7 +61,6 @@ function OrderCard({ order }) {
         </div>
       )}
 
-      {/* Items */}
       <div className="p-5 space-y-3">
         {order.items?.map((item, i) => (
           <div key={i} className="flex gap-3 items-center">
@@ -84,7 +81,6 @@ function OrderCard({ order }) {
         ))}
       </div>
 
-      {/* Footer */}
       <div className="px-5 pb-4 flex justify-between items-center text-[9px] text-white/25 tracking-widest border-t border-white/5 pt-3">
         <span>Payment: <span className="text-white/40 uppercase">{order.paymentMethod}</span></span>
         <span>Est. delivery: 5–7 business days</span>
@@ -98,10 +94,11 @@ export default function OrderHistoryPage({ cart }) {
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const API = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     if (!user) { navigate("/login"); return; }
-    fetch("/api/orders/my-orders", {
+    fetch(`${API}/api/orders/my-orders`, {
       headers: { Authorization: `Bearer ${user.token}` },
     })
       .then((r) => r.json())

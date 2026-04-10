@@ -17,9 +17,9 @@ const CATEGORIES = ["GRAPHIC TEE", "SHIRT", "KNIT"];
 export default function AdminPage() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  
+  const API = import.meta.env.VITE_API_URL;
+
   const [activeTab, setActiveTab] = useState("orders");
-  
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(null);
@@ -42,11 +42,10 @@ export default function AdminPage() {
     else fetchProducts();
   }, [user, page, activeTab]);
 
-  // ✅ FIX: Use Authorization header (JWT) instead of x-admin-key
   const fetchOrders = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/orders/all?page=${page}&limit=15`, {
+      const res = await fetch(`${API}/api/orders/all?page=${page}&limit=15`, {
         headers: { Authorization: `Bearer ${user.token}` },
       });
       const data = await res.json();
@@ -57,11 +56,10 @@ export default function AdminPage() {
     finally { setLoading(false); }
   };
 
-  // ✅ FIX: Use Authorization header (JWT) instead of x-admin-key
   const updateStatus = async (orderId, status) => {
     setUpdating(orderId);
     try {
-      const res = await fetch(`/api/orders/${orderId}/status`, {
+      const res = await fetch(`${API}/api/orders/${orderId}/status`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -78,7 +76,7 @@ export default function AdminPage() {
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/products");
+      const res = await fetch(`${API}/api/products`);
       const data = await res.json();
       setProducts(data);
     } catch (err) { console.error("Fetch failed", err); }
@@ -87,7 +85,9 @@ export default function AdminPage() {
 
   const handleProductSubmit = async (e) => {
     e.preventDefault();
-    const url = editingProduct ? `/api/products/${editingProduct._id}` : "/api/products";
+    const url = editingProduct
+      ? `${API}/api/products/${editingProduct._id}`
+      : `${API}/api/products`;
     const method = editingProduct ? "PUT" : "POST";
 
     const formattedData = {
@@ -111,18 +111,18 @@ export default function AdminPage() {
         setFormData({ name: "", price: "", category: "GRAPHIC TEE", description: "", images: "", sizes: "S,M,L,XL", inStock: true });
         fetchProducts();
       }
-    } catch (err) { alert("Error saving product"); }
+    } catch { alert("Error saving product"); }
   };
 
   const deleteProduct = async (id) => {
     if (!window.confirm("Delete this product forever?")) return;
     try {
-      await fetch(`/api/products/${id}`, {
+      await fetch(`${API}/api/products/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${user.token}` },
       });
       fetchProducts();
-    } catch (err) { console.error("Delete failed"); }
+    } catch { console.error("Delete failed"); }
   };
 
   const filteredOrders = filterStatus === "all" ? orders : orders.filter((o) => o.status === filterStatus);

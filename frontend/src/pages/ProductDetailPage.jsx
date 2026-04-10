@@ -26,15 +26,16 @@ export default function ProductDetailPage({ cart, setCart }) {
   const [reviewSuccess, setReviewSuccess] = useState(false);
   const [hoveredStar, setHoveredStar] = useState(0);
 
+  const API = import.meta.env.VITE_API_URL;
   const cartCount = cart.reduce((sum, i) => sum + i.qty, 0);
 
   useEffect(() => {
-    fetch(`/api/products/${id}`)
+    fetch(`${API}/api/products/${id}`)
       .then((res) => res.json())
       .then((data) => { setProduct(data); setLoading(false); })
       .catch(() => setLoading(false));
 
-    fetch(`/api/reviews/${id}`)
+    fetch(`${API}/api/reviews/${id}`)
       .then((res) => res.json())
       .then((data) => {
         setReviews(data.reviews || []);
@@ -64,7 +65,7 @@ export default function ProductDetailPage({ cart, setCart }) {
     if (!reviewForm.comment.trim()) return setReviewError("Please write a comment");
     setReviewLoading(true);
     try {
-      const res = await fetch(`/api/reviews/${id}`, {
+      const res = await fetch(`${API}/api/reviews/${id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${user.token}` },
         body: JSON.stringify(reviewForm),
@@ -87,7 +88,11 @@ export default function ProductDetailPage({ cart, setCart }) {
     </div>
   );
 
-  if (loading || !product) return <div className="min-h-screen bg-black flex items-center justify-center"><div className="w-8 h-8 border-2 border-[#00FFFF] border-t-transparent rounded-full animate-spin" /></div>;
+  if (loading || !product) return (
+    <div className="min-h-screen bg-black flex items-center justify-center">
+      <div className="w-8 h-8 border-2 border-[#00FFFF] border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -105,7 +110,9 @@ export default function ProductDetailPage({ cart, setCart }) {
             </div>
             <div className="flex gap-2 mt-3 overflow-x-auto">
               {product.images?.map((img, i) => (
-                <button key={i} onClick={() => setImgIdx(i)} className={`flex-shrink-0 w-16 h-20 rounded-lg overflow-hidden border-2 ${i === imgIdx ? "border-[#00FFFF]" : "border-white/10"}`}><img src={img} className="w-full h-full object-cover" loading="lazy" /></button>
+                <button key={i} onClick={() => setImgIdx(i)} className={`flex-shrink-0 w-16 h-20 rounded-lg overflow-hidden border-2 ${i === imgIdx ? "border-[#00FFFF]" : "border-white/10"}`}>
+                  <img src={img} className="w-full h-full object-cover" loading="lazy" />
+                </button>
               ))}
             </div>
           </div>
@@ -114,7 +121,10 @@ export default function ProductDetailPage({ cart, setCart }) {
           <div className="w-full lg:w-1/2">
             <p className="text-[9px] tracking-[0.8em] text-[#00FFFF]/40 mb-2 uppercase">{product.category} — StreetVibeX</p>
             <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tighter mb-3 uppercase">{product.name}</h1>
-            <div className="flex items-center gap-3 mb-6"><p className="text-2xl sm:text-3xl font-black text-[#00FFFF]">₹{product.price?.toLocaleString()}</p><WishlistButton product={product} /></div>
+            <div className="flex items-center gap-3 mb-6">
+              <p className="text-2xl sm:text-3xl font-black text-[#00FFFF]">₹{product.price?.toLocaleString()}</p>
+              <WishlistButton product={product} />
+            </div>
             <p className="text-white/40 text-sm leading-relaxed mb-8 border-l-2 border-[#00FFFF]/20 pl-4">{product.description}</p>
 
             <div className="mb-8">
@@ -124,6 +134,7 @@ export default function ProductDetailPage({ cart, setCart }) {
                   <button key={size} onClick={() => setSelectedSize(size)} className={`w-14 h-14 font-black border-2 rounded-xl transition-all ${selectedSize === size ? "border-[#00FFFF] text-[#00FFFF] bg-[#00FFFF]/10 shadow-[0_0_15px_#00FFFF44]" : "border-white/10 text-white/40"}`}>{size}</button>
                 ))}
               </div>
+              {sizeError && <p className="text-red-400 text-[10px] mt-2 tracking-widest">Please select a size</p>}
             </div>
 
             <div className="flex flex-col gap-4 mb-8">
@@ -131,16 +142,18 @@ export default function ProductDetailPage({ cart, setCart }) {
               <button onClick={() => addToCart(true)} className="w-full py-5 font-black tracking-[0.3em] text-sm rounded-xl bg-white/5 border border-white/15 text-white hover:bg-white/10">BUY NOW →</button>
             </div>
 
-            {/* TRUST BADGES RESTORED */}
             <div className="grid grid-cols-3 gap-2">
               {[{ icon: "🚚", title: "Free Shipping" }, { icon: "↩️", title: "7-Day Return" }, { icon: "🔒", title: "Secure Pay" }].map((b, i) => (
-                <div key={i} className="text-center p-3 border border-white/5 rounded-xl"><p className="text-xl mb-1">{b.icon}</p><p className="text-[9px] font-black text-white/40 uppercase">{b.title}</p></div>
+                <div key={i} className="text-center p-3 border border-white/5 rounded-xl">
+                  <p className="text-xl mb-1">{b.icon}</p>
+                  <p className="text-[9px] font-black text-white/40 uppercase">{b.title}</p>
+                </div>
               ))}
             </div>
           </div>
         </div>
 
-        {/* REVIEWS RESTORED */}
+        {/* REVIEWS */}
         <div className="mt-20 border-t border-white/5 pt-16">
           <h2 className="text-3xl font-black text-white tracking-tighter mb-10">REVIEWS ({totalReviews})</h2>
           <div className="grid lg:grid-cols-2 gap-10">
@@ -149,11 +162,21 @@ export default function ProductDetailPage({ cart, setCart }) {
               {user ? (
                 <div className="space-y-4">
                   <StarRating value={reviewForm.rating} interactive size="text-2xl" />
-                  <textarea value={reviewForm.comment} onChange={(e) => setReviewForm(p => ({ ...p, comment: e.target.value }))} className="w-full bg-black border border-white/10 rounded-xl p-4 text-sm text-white focus:border-[#00FFFF] outline-none h-32" placeholder="Tell us about the quality..." />
+                  <textarea
+                    value={reviewForm.comment}
+                    onChange={(e) => setReviewForm(p => ({ ...p, comment: e.target.value }))}
+                    className="w-full bg-black border border-white/10 rounded-xl p-4 text-sm text-white focus:border-[#00FFFF] outline-none h-32"
+                    placeholder="Tell us about the quality..."
+                  />
                   {reviewError && <p className="text-red-400 text-[10px]">{reviewError}</p>}
-                  <button onClick={submitReview} disabled={reviewLoading} className="bg-[#00FFFF] text-black px-8 py-3 rounded-lg font-black text-[10px] tracking-widest uppercase">{reviewLoading ? "SUBMITTING..." : "SUBMIT REVIEW"}</button>
+                  {reviewSuccess && <p className="text-green-400 text-[10px]">✓ Review submitted!</p>}
+                  <button onClick={submitReview} disabled={reviewLoading} className="bg-[#00FFFF] text-black px-8 py-3 rounded-lg font-black text-[10px] tracking-widest uppercase">
+                    {reviewLoading ? "SUBMITTING..." : "SUBMIT REVIEW"}
+                  </button>
                 </div>
-              ) : <button onClick={() => navigate("/login")} className="text-[#00FFFF] text-[10px] tracking-widest border border-[#00FFFF]/30 px-6 py-3 rounded-lg">SIGN IN TO REVIEW</button>}
+              ) : (
+                <button onClick={() => navigate("/login")} className="text-[#00FFFF] text-[10px] tracking-widest border border-[#00FFFF]/30 px-6 py-3 rounded-lg">SIGN IN TO REVIEW</button>
+              )}
             </div>
             <div className="space-y-6">
               {reviews.map((r) => (
@@ -167,6 +190,7 @@ export default function ProductDetailPage({ cart, setCart }) {
           </div>
         </div>
       </div>
+
       <CartDrawer cart={cart} setCart={setCart} isOpen={cartOpen} onClose={() => setCartOpen(false)} />
     </div>
   );
