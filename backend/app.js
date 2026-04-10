@@ -24,18 +24,25 @@ app.set("trust proxy", 1);
 /**
  * 2. SECURITY MIDDLEWARE
  */
-app.use(helmet()); // Sets various security-related HTTP headers
+app.use(helmet());
 
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:4173",
-  process.env.FRONTEND_URL, 
+  "https://streetvibex.vercel.app",
+  process.env.FRONTEND_URL,
 ].filter(Boolean);
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+      if (!origin) return callback(null, true);
+      if (
+        allowedOrigins.includes(origin) ||
+        origin.endsWith(".vercel.app")
+      ) {
+        return callback(null, true);
+      }
       callback(new Error(`CORS policy blocked access from: ${origin}`));
     },
     credentials: true,
@@ -46,14 +53,14 @@ app.use(
  * 3. RATE LIMITING (DDoS Protection)
  */
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, 
-  max: 100, 
+  windowMs: 15 * 60 * 1000,
+  max: 100,
   standardHeaders: true,
   legacyHeaders: false,
   message: { message: "Too many requests, please try again later." },
 });
 
-app.use("/api/", limiter); // Apply globally to all API routes
+app.use("/api/", limiter);
 
 /**
  * 4. BODY PARSING (Order Matters)
@@ -74,7 +81,6 @@ app.use("/api/reviews", reviewRoutes);
 
 /**
  * 6. HEALTH CHECK
- * Use this to verify Render is successfully talking to your DB.
  */
 app.get("/health", (req, res) => {
   res.status(200).json({
@@ -92,8 +98,8 @@ app.use((err, req, res, next) => {
   console.error(`[ERROR] ${req.method} ${req.url}: ${err.message}`);
 
   res.status(statusCode).json({
-    message: process.env.NODE_ENV === "production" 
-      ? "Internal Server Error" 
+    message: process.env.NODE_ENV === "production"
+      ? "Internal Server Error"
       : err.message,
     stack: process.env.NODE_ENV === "production" ? null : err.stack,
   });
