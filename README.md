@@ -6,11 +6,6 @@
 🔗 **Live Demo:** [streetvibex.vercel.app](https://streetvibex.vercel.app)  
 👤 **Author:** [@sofiyasharma960](https://github.com/sofiyasharma960)
 
----
-
-## 📸 Screenshots
-
-> _(Add screenshots of your Homepage, Product Page, Cart, and Admin Panel here)_
 
 ---
 
