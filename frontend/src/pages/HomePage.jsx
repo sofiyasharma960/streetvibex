@@ -10,7 +10,6 @@ import Navbar from "../components/Navbar";
 
 const CATEGORIES = ["ALL", "GRAPHIC TEE", "SHIRT", "KNIT", "HOODIE"];
 
-// Premium Loading State
 function ProductSkeleton() {
   return (
     <div className="group">
@@ -31,22 +30,29 @@ export default function HomePage({ cart, setCart }) {
   const [activeCategory, setActiveCategory] = useState("ALL");
   const [searchQuery, setSearchQuery] = useState("");
 
-  // 1. Initialize Smooth Scroll (Lenis)
+  // 1. FIXED Smooth Scroll (Lenis) 
   useEffect(() => {
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
     });
 
+    let rafId;
+
     function raf(time) {
       lenis.raf(time);
-      requestAnimationFrame(raf);
+      rafId = requestAnimationFrame(raf);
     }
-    requestAnimationFrame(raf);
-    return () => lenis.destroy();
+
+    rafId = requestAnimationFrame(raf);
+
+    return () => {
+      if (rafId) cancelAnimationFrame(rafId);
+      lenis.destroy();
+    };
   }, []);
 
-  // 2. Optimized Data Fetching
+  // 2. Data Fetching
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -62,7 +68,7 @@ export default function HomePage({ cart, setCart }) {
     fetchProducts();
   }, []);
 
-  // 3. Filter Logic (Search + Category)
+  // 3. Filter Logic
   const filteredProducts = useMemo(() => {
     return products.filter((p) => {
       const matchesCat = activeCategory === "ALL" || p.category === activeCategory;
@@ -78,7 +84,6 @@ export default function HomePage({ cart, setCart }) {
 
       {/* HERO SECTION */}
       <section className="relative h-[100vh] flex flex-col justify-center items-center px-6 overflow-hidden">
-        {/* Abstract Background Glow */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#00FFFF]/10 rounded-full blur-[160px] -z-10" />
         
         <motion.div 
@@ -103,7 +108,6 @@ export default function HomePage({ cart, setCart }) {
           </motion.button>
         </motion.div>
 
-        {/* Floating Tag */}
         <div className="absolute bottom-10 left-10 hidden md:block">
           <p className="text-[9px] tracking-widest text-white/20 leading-relaxed uppercase">
             Limited Release<br />No Restocks<br />StreetVibeX©
@@ -115,8 +119,6 @@ export default function HomePage({ cart, setCart }) {
 
       {/* SHOP SECTION */}
       <section ref={shopRef} id="shop" className="py-32 px-6 sm:px-12 max-w-[1400px] mx-auto">
-        
-        {/* Filtering UI */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mb-20">
           <div className="flex flex-wrap gap-3">
             {CATEGORIES.map((cat) => (
@@ -145,16 +147,12 @@ export default function HomePage({ cart, setCart }) {
           </div>
         </div>
 
-        {/* Grid Engine */}
         {loading ? (
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-12">
             {[1, 2, 3, 4].map((n) => <ProductSkeleton key={n} />)}
           </div>
         ) : (
-          <motion.div 
-            layout
-            className="grid grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-12 md:gap-x-8"
-          >
+          <motion.div layout className="grid grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-12 md:gap-x-8">
             <AnimatePresence mode="popLayout">
               {filteredProducts.map((product) => (
                 <motion.div
@@ -192,7 +190,6 @@ export default function HomePage({ cart, setCart }) {
           </motion.div>
         )}
 
-        {/* Empty Search Result */}
         {!loading && filteredProducts.length === 0 && (
           <div className="py-40 text-center">
             <p className="text-white/20 text-xs tracking-[0.5em] uppercase font-bold italic">No items found in this frequency</p>
@@ -216,14 +213,9 @@ export default function HomePage({ cart, setCart }) {
         </div>
       </footer>
       
-      {/* Global CSS for Stroke Text */}
       <style dangerouslySetInnerHTML={{ __html: `
-        .stroke-text {
-          -webkit-text-stroke: 1px rgba(255,255,255,0.2);
-        }
-        @media (min-width: 1024px) {
-          .stroke-text { -webkit-text-stroke: 2px rgba(255,255,255,0.2); }
-        }
+        .stroke-text { -webkit-text-stroke: 1px rgba(255,255,255,0.2); }
+        @media (min-width: 1024px) { .stroke-text { -webkit-text-stroke: 2px rgba(255,255,255,0.2); } }
       `}} />
     </div>
   );
