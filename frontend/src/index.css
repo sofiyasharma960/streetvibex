@@ -1,10 +1,17 @@
 @import "tailwindcss";
 
+@theme {
+  --color-black: #000000;
+  --color-cyber-cyan: #00FFFF;
+}
+
+/* 10/10: Branding every pixel */
 ::selection {
-  background-color: #00FFFF;
+  background-color: var(--color-cyber-cyan);
   color: #000000;
 }
 
+/* Custom Cyberpunk Scrollbar */
 ::-webkit-scrollbar {
   width: 4px;
 }
@@ -12,7 +19,7 @@
   background: #000;
 }
 ::-webkit-scrollbar-thumb {
-  background: #008080;
+  background: linear-gradient(to bottom, var(--color-cyber-cyan), #008080);
   border-radius: 10px;
 }
 
@@ -22,16 +29,9 @@ html, body {
   font-family: 'Inter', -apple-system, sans-serif;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
-  cursor: auto;
 }
 
-html.lenis {
-  height: auto;
-}
-.lenis.lenis-smooth {
-  scroll-behavior: auto;
-}
-
+/* Marquee Animation Logic */
 @keyframes marquee {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
@@ -41,22 +41,12 @@ html.lenis {
   display: flex;
   width: max-content;
   animation: marquee 30s linear infinite;
-  will-change: transform;
 }
 
-.text-glow {
-  text-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
-}
-
+/* Premium Glassmorphism */
 .glass {
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.scroll-hide {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-.scroll-hide::-webkit-scrollbar {
-  display: none;
 }
