@@ -1,133 +1,62 @@
 @import "tailwindcss";
 
-/* ── SELECTION ── */
 ::selection {
   background-color: #00FFFF;
   color: #000000;
 }
 
-/* ── SCROLLBAR ── */
-::-webkit-scrollbar { width: 3px; }
-::-webkit-scrollbar-track { background: #000; }
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: #000;
+}
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, #00FFFF, #008080);
+  background: #008080;
   border-radius: 10px;
 }
 
-/* ── BASE ── */
 html, body {
   background-color: #000;
   color: #fff;
-  font-family: 'Satoshi', -apple-system, sans-serif;
+  font-family: 'Inter', -apple-system, sans-serif;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  cursor: auto;
 }
 
-/* ── DISPLAY FONT ── */
-.font-display {
-  font-family: 'Clash Display', sans-serif;
+html.lenis {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto;
 }
 
-/* ── LENIS ── */
-html.lenis { height: auto; }
-.lenis.lenis-smooth { scroll-behavior: auto; }
-
-/* ── MARQUEE ── */
 @keyframes marquee {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
+
 .animate-marquee {
   display: flex;
   width: max-content;
-  animation: marquee 25s linear infinite;
-}
-.animate-marquee:hover { animation-play-state: paused; }
-
-/* ── CURSOR ── */
-* { cursor: none !important; }
-
-.custom-cursor {
-  width: 12px;
-  height: 12px;
-  background: #00FFFF;
-  border-radius: 50%;
-  position: fixed;
-  top: 0; left: 0;
-  pointer-events: none;
-  z-index: 99999;
-  transform: translate(-50%, -50%);
-  transition: width 0.2s, height 0.2s, background 0.2s;
-  mix-blend-mode: difference;
+  animation: marquee 30s linear infinite;
+  will-change: transform;
 }
 
-.custom-cursor-ring {
-  width: 40px;
-  height: 40px;
-  border: 1px solid rgba(0, 255, 255, 0.4);
-  border-radius: 50%;
-  position: fixed;
-  top: 0; left: 0;
-  pointer-events: none;
-  z-index: 99998;
-  transform: translate(-50%, -50%);
-  transition: width 0.3s, height 0.3s;
-}
-
-/* ── GLOW UTILITIES ── */
 .text-glow {
-  text-shadow: 0 0 20px rgba(0, 255, 255, 0.5), 0 0 40px rgba(0, 255, 255, 0.2);
-}
-.box-glow {
-  box-shadow: 0 0 30px rgba(0, 255, 255, 0.15);
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
 }
 
-/* ── GLASS ── */
 .glass {
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(0, 0, 0, 0.85);
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-/* ── PRODUCT CARD HOVER ── */
-.product-card-img {
-  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.product-card:hover .product-card-img {
-  transform: scale(1.08);
-}
-
-/* ── SCROLL HIDE ── */
 .scroll-hide {
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
-.scroll-hide::-webkit-scrollbar { display: none; }
-
-/* ── GRAIN OVERLAY ── */
-.grain::after {
-  content: '';
-  position: fixed;
-  inset: -200%;
-  width: 400%;
-  height: 400%;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 9000;
-  opacity: 0.35;
-  animation: grain 0.5s steps(1) infinite;
-}
-@keyframes grain {
-  0%, 100% { transform: translate(0, 0); }
-  10% { transform: translate(-2%, -3%); }
-  20% { transform: translate(3%, 2%); }
-  30% { transform: translate(-1%, 4%); }
-  40% { transform: translate(2%, -1%); }
-  50% { transform: translate(-3%, 1%); }
-  60% { transform: translate(1%, -2%); }
-  70% { transform: translate(-2%, 3%); }
-  80% { transform: translate(3%, -3%); }
-  90% { transform: translate(-1%, 2%); }
+.scroll-hide::-webkit-scrollbar {
+  display: none;
 }
