@@ -24,8 +24,8 @@ export default function CheckoutPage() {
   const API = import.meta.env.VITE_API_URL;
 
   const [form, setForm] = useState({
-    name: user?.name || "",
-    email: user?.email || "",
+    name: "",
+    email: "",
     phone: "",
     address: "",
     city: "",
@@ -35,7 +35,7 @@ export default function CheckoutPage() {
 
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  const [loadingStep, setLoadingStep] = useState(""); // granular step text
+  const [loadingStep, setLoadingStep] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("razorpay");
   const [couponInput, setCouponInput] = useState("");
   const [couponError, setCouponError] = useState("");
@@ -138,7 +138,8 @@ export default function CheckoutPage() {
 
     if (paymentMethod === "cod") {
       setLoadingStep("Placing your order...");
-      return processOrder(false);
+      await processOrder(false); // ✅ FIXED: was missing await
+      return;
     }
 
     try {
@@ -322,7 +323,6 @@ export default function CheckoutPage() {
                 <p className="text-red-500 text-[8px] mt-2 ml-2 uppercase tracking-widest font-bold">{couponError}</p>
               )}
 
-              {/* Loading step indicator */}
               {loading && loadingStep && (
                 <p className="text-[9px] text-[#00FFFF]/60 tracking-widest text-center mt-4 uppercase">
                   {loadingStep}
