@@ -12,14 +12,12 @@ import OrderHistoryPage from "./pages/OrderHistoryPage";
 import AdminPage from "./pages/AdminPage";
 import OrderConfirmedPage from "./pages/OrderConfirmedPage";
 import NotFoundPage from "./pages/NotFoundPage";
-import WhatsAppButton from "./components/WhatsAppButton";
 
 export default function App() {
   return (
     <ErrorBoundary>
       <AuthProvider>
         <CartProvider>
-          <WhatsAppButton />
           <Routes>
             <Route path="/" element={<ErrorBoundary><HomePage /></ErrorBoundary>} />
             <Route path="/product/:id" element={<ErrorBoundary><ProductDetailPage /></ErrorBoundary>} />
